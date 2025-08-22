@@ -61,17 +61,17 @@ const About = () => {
                 <p className="text-sm text-gray-400">Engineered dynamic data visualizations and heatmaps using Python to surface insights from complex AI</p>
               </div>
               <div>
-                <h4 className="text-lg font-medium text-white mb-2">Sep 2023 - Jun 2025</h4>
+                <h4 className="text-lg font-medium text-white mb-2">Oct 2024 - Jun 2025</h4>
                 <p>Machine Learning Engineer at Outlier AI</p>
                 <p className="text-sm text-gray-400">Audited LLM responses for high-complexity tasks, validating reasoning across STEM domains</p>
               </div>
               <div>
-                <h4 className="text-lg font-medium text-white mb-2">Feb 2025 - April 2025</h4>
+                <h4 className="text-lg font-medium text-white mb-2">Sep 2024 - Oct 2024</h4>
                 <p>Cybersecurity Trainee at IBM</p>
                 <p className="text-sm text-gray-400">Trained in ethical hacking, network security protocols, and offensive tooling with Kali Linux</p>
               </div>
               <div>
-                <h4 className="text-lg font-medium text-white mb-2">Sep 2024 - Oct 2024</h4>
+                <h4 className="text-lg font-medium text-white mb-2">Oct 2024 - Jan 2025</h4>
                 <p>Software Engineer(AI) Intern at ShadowFox</p>
                 <p className="text-sm text-gray-400">Engineered AI-driven autocorrect keyboard and built ML models for vehicle price forecasting</p>
               </div>
