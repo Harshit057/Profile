@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 // Create transporter
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
     port: process.env.EMAIL_PORT || 587,
     secure: false, // true for 465, false for other ports
@@ -16,7 +16,16 @@ const createTransporter = () => {
 // Send contact form email
 const sendContactEmail = async (contactData) => {
   try {
+    // Validate required environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.warn('Email credentials not configured. Skipping email send.');
+      return { success: false, error: 'Email not configured' };
+    }
+
     const transporter = createTransporter();
+    
+    // Verify transporter configuration
+    await transporter.verify();
     
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -68,7 +77,17 @@ const sendContactEmail = async (contactData) => {
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending email:', error);
-    throw new Error('Failed to send email');
+    
+    // Provide more specific error messages
+    if (error.code === 'EAUTH') {
+      throw new Error('Email authentication failed. Check credentials.');
+    } else if (error.code === 'ECONNECTION') {
+      throw new Error('Failed to connect to email server.');
+    } else if (error.responseCode === 550) {
+      throw new Error('Invalid email address.');
+    } else {
+      throw new Error(`Failed to send email: ${error.message}`);
+    }
   }
 };
 

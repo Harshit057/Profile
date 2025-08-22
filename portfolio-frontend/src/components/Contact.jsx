@@ -26,8 +26,49 @@ const Contact = () => {
     setLoading(true);
     setError('');
 
+    // Client-side validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
+      setError('All fields are required.');
+      setLoading(false);
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
+    // Length validation
+    if (formData.name.length > 100) {
+      setError('Name must be less than 100 characters.');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.subject.length > 200) {
+      setError('Subject must be less than 200 characters.');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.message.length > 2000) {
+      setError('Message must be less than 2000 characters.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/contact`, formData);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const response = await axios.post(`${apiUrl}/contact`, formData, {
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
       setSuccess(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTimeout(() => setSuccess(false), 5000);
@@ -35,14 +76,23 @@ const Contact = () => {
       console.error('Error sending message:', err);
       
       // Provide more specific error messages
-      if (err.response) {
+      if (err.code === 'ECONNABORTED') {
+        setError('Request timed out. Please check your internet connection and try again.');
+      } else if (err.response) {
         // Server responded with error status
-        if (err.response.status === 500) {
+        const status = err.response.status;
+        const data = err.response.data;
+        
+        if (status === 503) {
+          setError('Service temporarily unavailable. Please try again later.');
+        } else if (status === 500) {
           setError('Server error. Please try again later.');
-        } else if (err.response.status === 400) {
-          setError('Please check your input and try again.');
+        } else if (status === 400) {
+          setError(data?.message || 'Please check your input and try again.');
+        } else if (status === 429) {
+          setError('Too many requests. Please wait a moment and try again.');
         } else {
-          setError(`Error: ${err.response.data?.message || 'Failed to send message'}`);
+          setError(`Error: ${data?.message || 'Failed to send message'}`);
         }
       } else if (err.request) {
         // Network error - server not reachable
@@ -191,7 +241,7 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-white font-medium mb-2">
-                  Name
+                  Name <span className="text-gray-400 text-sm">({formData.name.length}/100)</span>
                 </label>
                 <input
                   type="text"
@@ -200,6 +250,7 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  maxLength={100}
                   className="w-full px-4 py-3 bg-slate-700/50 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors duration-300"
                   placeholder="Your name"
                 />
@@ -223,7 +274,7 @@ const Contact = () => {
 
               <div>
                 <label htmlFor="subject" className="block text-white font-medium mb-2">
-                  Subject
+                  Subject <span className="text-gray-400 text-sm">({formData.subject.length}/200)</span>
                 </label>
                 <input
                   type="text"
@@ -232,6 +283,7 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
+                  maxLength={200}
                   className="w-full px-4 py-3 bg-slate-700/50 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors duration-300"
                   placeholder="What's this about?"
                 />
@@ -239,7 +291,7 @@ const Contact = () => {
 
               <div>
                 <label htmlFor="message" className="block text-white font-medium mb-2">
-                  Message
+                  Message <span className="text-gray-400 text-sm">({formData.message.length}/2000)</span>
                 </label>
                 <textarea
                   id="message"
@@ -247,6 +299,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  maxLength={2000}
                   rows={5}
                   className="w-full px-4 py-3 bg-slate-700/50 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors duration-300 resize-none"
                   placeholder="Tell me about your project..."

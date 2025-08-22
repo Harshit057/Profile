@@ -20,7 +20,7 @@ const Hero = () => {
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-purple-600/20"></div>
       
       {/* Animated background elements */}
       <div className="absolute inset-0">

@@ -14,10 +14,10 @@ const Projects = () => {
       _id: '1',
       title: 'Mocca (Real-Time Communication)',
       description: 'Implemented peer-to-peer communication using WebRTC for low-latency calls. Enabled room-based communication and dynamic video stream switching.',
-      image: 'https://via.placeholder.com/400x250/6366f1/ffffff?text=Mocca',
+      image: '/images/projects/mocca-screenshot.png', // Will fallback to placeholder if not found
       technologies: ['MERN Stack', 'WebRTC', 'Socket.io', 'React'],
       githubUrl: 'https://github.com/Harshit057',
-      liveUrl: 'https://example.com',
+      liveUrl: 'https://mocca-kappa.vercel.app/',
       featured: true,
       category: 'fullstack'
     },
@@ -25,7 +25,7 @@ const Projects = () => {
       _id: '2',
       title: 'CityPulse (Traffic Analysis)',
       description: 'Supports heatmap uploads and processes them to extract congestion and traffic density metrics. Visualizes results through interactive charts and geospatial maps.',
-      image: 'https://via.placeholder.com/400x250/8b5cf6/ffffff?text=CityPulse',
+      image: '/images/projects/citypulse-screenshot.png',
       technologies: ['Data Visualization', 'AI & GIS', 'D3.js', 'Leaflet'],
       githubUrl: 'https://github.com/Harshit057',
       liveUrl: 'https://example.com',
@@ -36,7 +36,7 @@ const Projects = () => {
       _id: '3',
       title: 'SellHole (E-Commerce Platform)',
       description: 'Eliminates middlemen by enabling transparent and direct trade. Scalable backend using Node.js and MongoDB with secure user authentication.',
-      image: 'https://via.placeholder.com/400x250/06b6d4/ffffff?text=SellHole',
+      image: '/images/projects/sellhole-screenshot.png',
       technologies: ['MERN Stack', 'JWT Auth', 'MongoDB', 'Social Impact'],
       githubUrl: 'https://github.com/Harshit057',
       liveUrl: 'https://example.com',
@@ -47,7 +47,7 @@ const Projects = () => {
       _id: '4',
       title: 'AI Tutor (Educational Tech)',
       description: 'Smart routing system connects to Ollama, LLaMA.cpp, or OpenAI APIs based on question type. Specialized for academic domains using custom knowledge bases.',
-      image: 'https://via.placeholder.com/400x250/10b981/ffffff?text=AI+Tutor',
+      image: '/images/projects/ai-tutor-screenshot.png',
       technologies: ['Hybrid AI', 'LLM', 'Ollama', 'Local Privacy'],
       githubUrl: 'https://github.com/Harshit057',
       liveUrl: 'https://example.com',
@@ -58,7 +58,7 @@ const Projects = () => {
       _id: '5',
       title: 'DABBA (Food-Tech Platform)',
       description: 'Enables housewives to monetize cooking skills while solving affordability and nutrition for students. Built role-based dashboards with order management.',
-      image: 'https://via.placeholder.com/400x250/f59e0b/ffffff?text=DABBA',
+      image: '/images/projects/dabba-screenshot.png',
       technologies: ['MERN Stack', 'Community Empowerment', 'Real-time', 'Reviews'],
       githubUrl: 'https://github.com/Harshit057',
       liveUrl: 'https://example.com',
@@ -151,12 +151,6 @@ const Projects = () => {
           </div>
         )}
 
-        {error && projects.length > 0 && (
-          <div className="text-center mb-8">
-            <p className="text-yellow-400">Showing sample projects due to a loading error.</p>
-          </div>
-        )}
-
         {/* Featured Projects */}
         {featuredProjects.length > 0 && (
           <motion.div
@@ -191,12 +185,52 @@ const Projects = () => {
             </div>
           </motion.div>
         )}
+
+        {/* View All Projects Link */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="text-center mt-16"
+        >
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            href="https://github.com/Harshit057?tab=repositories"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
+          >
+            <Github size={20} />
+            View All Projects on GitHub
+            <ExternalLink size={16} />
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );
 };
 
 const ProjectCard = ({ project, index, featured = false }) => {
+  const [imageError, setImageError] = useState(false);
+  
+  // Fallback image based on project category and title
+  const getFallbackImage = () => {
+    const colors = {
+      'fullstack': '6366f1',
+      'ai': '8b5cf6', 
+      'web': '06b6d4'
+    };
+    const color = colors[project.category] || '10b981';
+    const title = encodeURIComponent(project.title.split(' ')[0]);
+    return `https://via.placeholder.com/400x250/${color}/ffffff?text=${title}`;
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -210,8 +244,9 @@ const ProjectCard = ({ project, index, featured = false }) => {
     >
       <div className="relative overflow-hidden">
         <img
-          src={project.image}
+          src={imageError ? getFallbackImage() : project.image}
           alt={project.title}
+          onError={handleImageError}
           className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
