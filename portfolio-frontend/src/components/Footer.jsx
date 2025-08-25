@@ -137,7 +137,7 @@ const Footer = () => {
             © {new Date().getFullYear()} Harshit Sharma. All rights reserved.
           </p>
           <p className="text-gray-500 text-sm mt-2">
-            Built with React, Vite, and Tailwind CSS
+            Empowering innovation through creativity and cutting-edge digital solutions.
           </p>
         </motion.div>
       </div>
