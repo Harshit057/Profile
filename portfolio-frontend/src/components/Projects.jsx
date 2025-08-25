@@ -295,7 +295,8 @@ const ProjectCard = ({ project, index, featured = false }) => {
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300"
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text
+              -white rounded-lg hover:bg-purple-700 transition-colors duration-300"
             >
               <ExternalLink size={16} />
               {project.title.toLowerCase().includes('cnute') ? 'Deploy Own' : 'Live Demo'}
