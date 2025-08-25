@@ -3,6 +3,13 @@ import { motion } from 'framer-motion';
 import { ExternalLink, Github, Eye } from 'lucide-react';
 import axios from 'axios';
 
+// Import project images
+import moccaImage from '../assets/project-pictures/MOCCA.png';
+import cnuteImage from '../assets/project-pictures/CNUTE.png';
+import sellholeImage from '../assets/project-pictures/SELLHOLE.png';
+import komodoImage from '../assets/project-pictures/KOMODO.png';
+import citypulseImage from '../assets/project-pictures/CITYPULSE.png';
+
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,9 +21,9 @@ const Projects = () => {
       _id: '1',
       title: 'Mocca (Real-Time Communication)',
       description: 'Implemented peer-to-peer communication using WebRTC for low-latency calls. Enabled room-based communication and dynamic video stream switching.',
-      image: '/images/projects/mocca-screenshot.png', // Will fallback to placeholder if not found
+      image: moccaImage,
       technologies: ['MERN Stack', 'WebRTC', 'Socket.io', 'React'],
-      githubUrl: 'https://github.com/Harshit057',
+      githubUrl: 'https://github.com/Harshit057/mocca',
       liveUrl: 'https://mocca-kappa.vercel.app/',
       featured: true,
       category: 'fullstack'
@@ -25,10 +32,10 @@ const Projects = () => {
       _id: '2',
       title: 'CityPulse (Traffic Analysis)',
       description: 'Supports heatmap uploads and processes them to extract congestion and traffic density metrics. Visualizes results through interactive charts and geospatial maps.',
-      image: '/images/projects/citypulse-screenshot.png',
+      image: citypulseImage,
       technologies: ['Data Visualization', 'AI & GIS', 'D3.js', 'Leaflet'],
-      githubUrl: 'https://github.com/Harshit057',
-      liveUrl: 'https://example.com',
+      githubUrl: 'https://github.com/Harshit057/citypulse',
+      liveUrl: 'https://citypulse-production.up.railway.app/',
       featured: true,
       category: 'ai'
     },
@@ -36,32 +43,32 @@ const Projects = () => {
       _id: '3',
       title: 'SellHole (E-Commerce Platform)',
       description: 'Eliminates middlemen by enabling transparent and direct trade. Scalable backend using Node.js and MongoDB with secure user authentication.',
-      image: '/images/projects/sellhole-screenshot.png',
+      image: sellholeImage,
       technologies: ['MERN Stack', 'JWT Auth', 'MongoDB', 'Social Impact'],
-      githubUrl: 'https://github.com/Harshit057',
-      liveUrl: 'https://example.com',
+      githubUrl: 'https://github.com/Harshit057/sellhole',
+      liveUrl: 'https://sellhole.vercel.app/',
       featured: false,
       category: 'web'
     },
     {
       _id: '4',
-      title: 'AI Tutor (Educational Tech)',
-      description: 'Smart routing system connects to Ollama, LLaMA.cpp, or OpenAI APIs based on question type. Specialized for academic domains using custom knowledge bases.',
-      image: '/images/projects/ai-tutor-screenshot.png',
+      title: 'KOMODO(multiple specialized AI)',
+      description: 'Hybrid research and engineering project that explores how multiple specialized AI agents can collaborate, debate, and solve complex problems in real time.',
+      image: komodoImage,
       technologies: ['Hybrid AI', 'LLM', 'Ollama', 'Local Privacy'],
-      githubUrl: 'https://github.com/Harshit057',
-      liveUrl: 'https://example.com',
+      githubUrl: 'https://github.com/Harshit057/Komodo.git',
+      liveUrl: 'https://komodo-mu.vercel.app/',
       featured: false,
       category: 'ai'
     },
     {
       _id: '5',
-      title: 'DABBA (Food-Tech Platform)',
-      description: 'Enables housewives to monetize cooking skills while solving affordability and nutrition for students. Built role-based dashboards with order management.',
-      image: '/images/projects/dabba-screenshot.png',
+      title: 'CNUTE (De-FI Platform)',
+      description: 'A production-ready, serverless DeFi platform that enables autonomous treasury operations, cross-chain interactions, and compliance-aware financial operations through AI agent',
+      image: cnuteImage,
       technologies: ['MERN Stack', 'Community Empowerment', 'Real-time', 'Reviews'],
-      githubUrl: 'https://github.com/Harshit057',
-      liveUrl: 'https://example.com',
+      githubUrl: 'https://github.com/Harshit057/cnute',
+      liveUrl: 'https://aws.amazon.com/codedeploy/',
       featured: false,
       category: 'web'
     }
@@ -291,7 +298,7 @@ const ProjectCard = ({ project, index, featured = false }) => {
               className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300"
             >
               <ExternalLink size={16} />
-              Live Demo
+              {project.title.toLowerCase().includes('cnute') ? 'Deploy Own' : 'Live Demo'}
             </motion.a>
           )}
         </div>
