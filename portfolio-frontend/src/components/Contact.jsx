@@ -62,8 +62,16 @@ const Contact = () => {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      
+      // First, try to wake up the server with a health check
+      try {
+        await axios.get(`${apiUrl.replace('/api', '')}/health`, { timeout: 5000 });
+      } catch (healthErr) {
+        console.log('Health check failed, server might be cold starting:', healthErr.message);
+      }
+      
       const response = await axios.post(`${apiUrl}/contact`, formData, {
-        timeout: 10000, // 10 second timeout
+        timeout: 30000, // 30 second timeout for cold starts
         headers: {
           'Content-Type': 'application/json'
         }
@@ -77,14 +85,14 @@ const Contact = () => {
       
       // Provide more specific error messages
       if (err.code === 'ECONNABORTED') {
-        setError('Request timed out. Please check your internet connection and try again.');
+        setError('Request timed out. The server might be starting up - please wait a moment and try again.');
       } else if (err.response) {
         // Server responded with error status
         const status = err.response.status;
         const data = err.response.data;
         
         if (status === 503) {
-          setError('Service temporarily unavailable. Please try again later.');
+          setError('Service temporarily unavailable. The server might be starting up - please try again in a moment.');
         } else if (status === 500) {
           setError('Server error. Please try again later.');
         } else if (status === 400) {
@@ -96,7 +104,7 @@ const Contact = () => {
         }
       } else if (err.request) {
         // Network error - server not reachable
-        setError('Cannot connect to server. Please check your internet connection and try again.');
+        setError('Cannot connect to server. The server might be starting up - please check your internet connection and try again in a moment.');
       } else {
         // Other errors
         setError('Failed to send message. Please try again.');
@@ -309,15 +317,18 @@ const Contact = () => {
               <motion.button
                 type="submit"
                 disabled={loading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: loading ? 1 : 1.02 }}
+                whileTap={{ scale: loading ? 1 : 0.98 }}
                 className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Sending...
-                  </>
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Sending...
+                    </div>
+                    <span className="text-xs mt-1 opacity-75">Server starting up, please wait...</span>
+                  </div>
                 ) : (
                   <>
                     <Send size={20} />
